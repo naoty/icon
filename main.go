@@ -7,6 +7,7 @@ import (
 	"image/png"
 	"os"
 	"strconv"
+	"strings"
 )
 
 // Version is the version of this application.
@@ -16,7 +17,10 @@ func main() {
 	if len(os.Args) > 1 {
 		switch os.Args[1] {
 		case "--version", "-v":
-			fmt.Fprintln(os.Stdout, Version)
+			fmt.Println(Version)
+			os.Exit(0)
+		case "--help", "-h":
+			fmt.Println(help())
 			os.Exit(0)
 		}
 	}
@@ -47,6 +51,20 @@ func main() {
 	}
 
 	os.Exit(0)
+}
+
+func help() string {
+	lines := []string{}
+	lines = append(lines, "Usage:")
+	lines = append(lines, "  icon [scale]")
+	lines = append(lines, "  icon (--version | -v)")
+	lines = append(lines, "  icon (--help | -h)")
+	lines = append(lines, "")
+	lines = append(lines, "Options:")
+	lines = append(lines, "  --version, -v\tShow version number")
+	lines = append(lines, "  --help, -h\tShow help message")
+
+	return strings.Join(lines, "\n")
 }
 
 var dots = [][]int{
