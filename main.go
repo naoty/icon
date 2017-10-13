@@ -6,6 +6,7 @@ import (
 	"image/color"
 	"image/png"
 	"os"
+	"strconv"
 )
 
 func main() {
@@ -16,8 +17,17 @@ func main() {
 	}
 	defer file.Close()
 
-	image := image.NewRGBA(image.Rect(0, 0, 16, 16))
-	drawDots(image)
+	scale := 1
+	if len(os.Args) > 1 {
+		scale, err = strconv.Atoi(os.Args[1])
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+	}
+
+	image := image.NewRGBA(image.Rect(0, 0, 16*scale, 16*scale))
+	drawDots(image, scale)
 
 	err = png.Encode(file, image)
 	if err != nil {
@@ -47,16 +57,20 @@ var dots = [][]int{
 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 }
 
-func drawDots(image *image.RGBA) {
+func drawDots(image *image.RGBA, scale int) {
 	white := color.RGBA{255, 255, 255, 255}
 	black := color.RGBA{0, 0, 0, 255}
 
 	for x := 0; x < 16; x++ {
-		for y := 0; y < 16; y++ {
-			if dots[y][x] == 1 {
-				image.Set(x, y, white)
-			} else {
-				image.Set(x, y, black)
+		for i := 0; i < scale; i++ {
+			for y := 0; y < 16; y++ {
+				for j := 0; j < scale; j++ {
+					if dots[y][x] == 1 {
+						image.Set(x*scale+i, y*scale+j, white)
+					} else {
+						image.Set(x*scale+i, y*scale+j, black)
+					}
+				}
 			}
 		}
 	}
