@@ -9,7 +9,18 @@ import (
 	"strconv"
 )
 
+// Version is the version of this application.
+var Version = ""
+
 func main() {
+	if len(os.Args) > 1 {
+		switch os.Args[1] {
+		case "--version", "-v":
+			fmt.Fprintln(os.Stdout, Version)
+			os.Exit(0)
+		}
+	}
+
 	file, err := os.Create("icon.png")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
